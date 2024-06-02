@@ -68,11 +68,27 @@ def home(request):
         analyzer = SentimentIntensityAnalyzer()
 
         def get_sentiment(text):
+            
             scores = analyzer.polarity_scores(text)
-            return scores['compound']
+            compound = scores['compound']
+            if compound >= 0.05:
+                sentiment = 'positive'
+            elif compound <= -0.05:
+                sentiment = 'negative'
+            else:
+                sentiment = 'neutral'
+            return sentiment, compound
 
-        df['sentiment_title'] = df['processed_title'].apply(get_sentiment)
-        df['sentiment_text'] = df['text'].apply(get_sentiment)
+# In your view, update the code to use the new get_sentiment function
+#        df['sentiment_title'], df['sentiment_score'] = zip(*df['processed_title'].apply(get_sentiment))
+ #       df['sentiment_text'], _ = zip(*df['text'].apply(get_sentiment))
+
+        df['sentiment_title'], df['sentiment_score_title'] = zip(*df['processed_title'].apply(get_sentiment))
+       # df['sentiment_text'], df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
+        _, df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
+
+     #   df['sentiment_title'] = df['processed_title'].apply(get_sentiment)
+    #    df['sentiment_text'] = df['text'].apply(get_sentiment)
 
         # Convert DataFrame to list of dictionaries
         results = df.to_dict('records')
