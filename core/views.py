@@ -22,33 +22,39 @@ def home(request):
     results = []
     if query:
         query = query.replace(" ", "+")
-        link = f"https://www.google.com/search?q={query}&sca_esv=7b1f93cccdc9738a&sca_upv=1&rlz=1C1UEAD_enIN1066IN1066&biw=1536&bih=398&tbm=nws&sxsrf=ADLYWILa2YTPLYepGsgLG385nFveSa_kmQ%3A1716828649665&ei=6blUZoWfKM2gseMP7qqZgAc&ved=0ahUKEwjFt7aOpa6GAxVNUGwGHW5VBnAQ4dUDCA0&uact=5&oq=bjp&gs_lp=Egxnd3Mtd2l6LW5ld3MiA2JqcDIREAAYgAQYkQIYsQMYgwEYigUyCxAAGIAEGLEDGIMBMggQABiABBixAzIKEAAYgAQYQxiKBTIKEAAYgAQYQxiKBTILEAAYgAQYsQMYgwEyCxAAGIAEGLEDGIMBMgoQABiABBhDGIoFMggQABiABBixAzIIEAAYgAQYsQNI8YgBUNOAAVj1hQFwAHgAkAEAmAH1AaAB3wWqAQUwLjIuMrgBA8gBAPgBAZgCBKAChgbCAgQQABgDwgIOEAAYgAQYkQIYsQMYigXCAg4QABiABBixAxiDARiKBcICEBAAGIAEGLEDGEMYgwEYigWYAwCIBgGSBwUwLjIuMqAHuhU&sclient=gws-wiz-news"
+        link = f"https://news.google.com/search?q={query}&hl=en-IN&gl=IN&ceid=IN:en"
+        # link = f"https://www.google.com/search?lr=lang_en&q={query}&sca_esv=7b1f93cccdc9738a&sca_upv=1&rlz=1C1UEAD_enIN1066IN1066&biw=1536&bih=398&tbm=nws&sxsrf=ADLYWILa2YTPLYepGsgLG385nFveSa_kmQ%3A1716828649665&ei=6blUZoWfKM2gseMP7qqZgAc&ved=0ahUKEwjFt7aOpa6GAxVNUGwGHW5VBnAQ4dUDCA0&uact=5&oq=bjp&gs_lp=Egxnd3Mtd2l6LW5ld3MiA2JqcDIREAAYgAQYkQIYsQMYgwEYigUyCxAAGIAEGLEDGIMBMggQABiABBixAzIKEAAYgAQYQxiKBTIKEAAYgAQYQxiKBTILEAAYgAQYsQMYgwEyCxAAGIAEGLEDGIMBMgoQABiABBhDGIoFMggQABiABBixAzIIEAAYgAQYsQNI8YgBUNOAAVj1hQFwAHgAkAEAmAH1AaAB3wWqAQUwLjIuMrgBA8gBAPgBAZgCBKAChgbCAgQQABgDwgIOEAAYgAQYkQIYsQMYigXCAg4QABiABBixAxiDARiKBcICEBAAGIAEGLEDGEMYgwEYigWYAwCIBgGSBwUwLjIuMqAHuhU&sclient=gws-wiz-news"
         req = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(req).read()
         soup = BeautifulSoup(webpage, 'html5lib')
 
         articles = []
-
-        for link in soup.find_all('a'):
+        cnt = 15
+        for link in soup.find_all('a', limit=25):
             link_str = str(link.get('href'))
-            link_split = (link_str.split("/url?q="))
-            if len(link_split) == 2:
-                link_str = link_split[1].split('&sa=U&')[0]
-
+            # link_split = (link_str.split("/url?q="))
+            # if len(link_split) == 2:
+            #     link_str = link_split[1].split('&sa=U&')[0]
+            if cnt== 0:
+                break
             try:
-                if link_str.startswith(
-                        "https://") and 'google.com' not in link_str and 'youtube.com' not in link_str and 'blogger.com' not in link_str:
-                    article = Article(link_str)
+                # if link_str.startswith(
+                #         "https://") and 'google.com' not in link_str and 'youtube.com' not in link_str and 'blogger.com' not in link_str:
+                if link_str.startswith("./articles") :
+                    article = Article("https://news.google.com/" + link_str)
                     article.download()
                     article.parse()
 
+                    if not article.title or not article.text:
+                        continue
                     new_article = {
-                        "link": link_str,
+                        "link": "https://news.google.com/" + link_str,
                         "title": article.title,
                         "text": article.text
                     }
 
                     articles.append(new_article)
+                    cnt = cnt-1
             except Exception as e:
                 print(f"Error processing article at {link_str}: {e}")
                 continue
@@ -63,7 +69,6 @@ def home(request):
             processed_text = ' '.join(lemmatized_tokens)
             return processed_text
 
-        df['processed_title'] = df['title'].apply(preprocess_text)
 
         analyzer = SentimentIntensityAnalyzer()
 
@@ -71,21 +76,22 @@ def home(request):
             
             scores = analyzer.polarity_scores(text)
             compound = scores['compound']
-            if compound >= 0.05:
-                sentiment = 'positive'
-            elif compound <= -0.05:
-                sentiment = 'negative'
-            else:
-                sentiment = 'neutral'
-            return sentiment, compound
+            return  compound
 
+        df['processed_title'] = df['title'].apply(preprocess_text)
+        df['processed_text'] = df['text'].apply(preprocess_text)
+
+        df['sentiment_score_title'] = df['processed_title'].apply(get_sentiment)
+        df['sentiment_score_text'] = df['processed_text'].apply(get_sentiment)
+
+        df['average_sentiment_score'] = (df['sentiment_score_title'] + df['sentiment_score_text']) / 2
 # In your view, update the code to use the new get_sentiment function
 #        df['sentiment_title'], df['sentiment_score'] = zip(*df['processed_title'].apply(get_sentiment))
  #       df['sentiment_text'], _ = zip(*df['text'].apply(get_sentiment))
 
-        df['sentiment_title'], df['sentiment_score_title'] = zip(*df['processed_title'].apply(get_sentiment))
-       # df['sentiment_text'], df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
-        _, df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
+    #     df['sentiment_title'], df['sentiment_score_title'] = zip(*df['processed_title'].apply(get_sentiment))
+    #    # df['sentiment_text'], df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
+    #     _, df['sentiment_score_text'] = zip(*df['text'].apply(get_sentiment))
 
      #   df['sentiment_title'] = df['processed_title'].apply(get_sentiment)
     #    df['sentiment_text'] = df['text'].apply(get_sentiment)
