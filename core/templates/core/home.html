@@ -1,109 +1,132 @@
 {% extends '.\core\base.html' %}
-    {% block extra_css %}
-   
-    {% endblock %}
+{% block extra_css %}
+{% endblock %}
 
- {% block content %}
+{% block content %}
 <div id="main">
-    
-{% if user.is_authenticated %}
-
-    <h1>Enter keywords</h1>
-    <form method="GET">
-        <div>
-            <label for="query"></label>
-            <input type="text" id="query" value="{{ request.GET.query }}" placeholder="query..." name="query"/>
-        </div>
-        <input type="submit" value="Submit"/>
-    </form>
-    {% if results %}
-        <div class="container">
-            <table class="grid">
-                <thead>
-                <tr>
-                    <th>Negative Sentiment</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for result in results %}
-                {% if result.average_sentiment_score < -0.25 %}
+    {% if user.is_authenticated %}
+        <h1>Enter keywords</h1>
+        <form method="GET">
+            <div>
+                <label for="query"></label>
+                <input type="text" id="query" value="{{ request.GET.query }}" placeholder="query..." name="query"/>
+            </div>
+            <input type="submit" value="Submit"/>
+        </form>
+        {% if results %}
+            <div class="container">
+                <table class="grid">
+                    <thead>
+                        <tr>
+                            <th>Negative Sentiment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                    {% if result.average_sentiment_score < -0.25 %}
                         <tr>
                             <td>
                                 <a href="{{ result.link }}">{{ result.title }}</a><br>
                                 <span class="score">Title Score: {{ result.sentiment_score_title }}</span>
                                 <span class="score">Text Score: {{ result.sentiment_score_text }}</span>
+                                <button class="createBookmark" data-title="{{ result.title }}" data-text="{{ result.text }}" data-link="{{ result.link }}">Add Bookmark</button>
                             </td>
                         </tr>
                     {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-            <table class="grid neutral">
-                <thead>
-                <tr>
-                    <th>Neutral Sentiment</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for result in results %}
-                {% if result.average_sentiment_score >= -0.25 and result.average_sentiment_score <= 0.25 %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <table class="grid neutral">
+                    <thead>
+                        <tr>
+                            <th>Neutral Sentiment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                    {% if result.average_sentiment_score >= -0.25 and result.average_sentiment_score <= 0.25 %}
                         <tr>
                             <td>
                                 <a href="{{ result.link }}">{{ result.title }}</a><br>
                                 <span class="score">Title Score: {{ result.sentiment_score_title }}</span>
                                 <span class="score">Text Score: {{ result.sentiment_score_text }}</span>
+                                <button class="createBookmark" data-title="{{ result.title }}" data-text="{{ result.text }}" data-link="{{ result.link }}">Add Bookmark</button>
                             </td>
                         </tr>
-                {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-            <table class="grid">
-                <thead>
-                <tr>
-                    <th>Positive Sentiment</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for result in results %}
-                {% if result.average_sentiment_score > 0.25 %}
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <table class="grid">
+                    <thead>
+                        <tr>
+                            <th>Positive Sentiment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                    {% if result.average_sentiment_score > 0.25 %}
                         <tr>
                             <td>
                                 <a href="{{ result.link }}">{{ result.title }}</a><br>
                                 <span class="score">Title Score: {{ result.sentiment_score_title }}</span>
                                 <span class="score">Text Score: {{ result.sentiment_score_text }}</span>
+                                <button class="createBookmark" data-title="{{ result.title }}" data-text="{{ result.text }}" data-link="{{ result.link }}">Add Bookmark</button>
                             </td>
                         </tr>
-                {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No news found.</p>
+        {% endif %}
     {% else %}
-<!--        <p>No news found.</p>-->
+        <div class="col-md-6 offset-md-3">
+            <h1>Login</h1>
+            <br/>
+            <form method="POST" action="{% url 'home' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div><br/>
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <br/>
+                <button type="submit" class="btn btn-secondary">Login</button>
+            </form>
+        </div>
     {% endif %}
-
-{% else %}
-        
-<div class="col-md-6 offset-md-3">
-    <h1>Login</h1>
-    <br/>
-    
-    <form method="POST" action="{% url 'home' %}">
-        {% csrf_token %}
-    
-      <div class="mb-3">
-        <input type="text" class="form-control" name="username", placeholder="Username" required>
-        
-      </div><br/>
-      <div class="mb-3">
-        <input type="password" class="form-control" name="password", placeholder="Password" required>
-      </div>
-      <br/>
-      <button type="submit" class="btn btn-secondary">Login</button>
-    
-    </form>
-{% endif %}
-   
 </div>
- {% endblock %} 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.createBookmark').click(function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var title = button.data('title');
+        var text = button.data('text');
+        var link = button.data('link');
+
+        $.ajax({
+            url: '{% url "addbookmark" %}',
+            type: 'GET',
+            data: {
+                'title': title,
+                'text': text,
+                'link': link
+            },
+            success: function(response) {
+                alert("Bookmark Added!");
+            },
+            error: function(response) {
+                alert("Failed to add bookmark.");
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
