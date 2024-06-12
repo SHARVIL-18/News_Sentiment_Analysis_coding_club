@@ -50,18 +50,20 @@ def home(request):
             soup = BeautifulSoup(webpage, 'html5lib')
 
             articles = []
-            cnt = 15
+            linkset = set()
             for link in soup.find_all('a', limit=25):
                 link_str = str(link.get('href'))
                 # link_split = (link_str.split("/url?q="))
                 # if len(link_split) == 2:
                 #     link_str = link_split[1].split('&sa=U&')[0]
-                if cnt == 0:
+                if len(linkset) == 10:
                     break
                 try:
                     # if link_str.startswith(
                     #         "https://") and 'google.com' not in link_str and 'youtube.com' not in link_str and 'blogger.com' not in link_str:
                     if link_str.startswith("./articles"):
+                        if link_str in linkset:
+                            continue
                         article = Article("https://news.google.com/" + link_str)
                         article.download()
                         article.parse()
@@ -75,7 +77,7 @@ def home(request):
                         }
 
                         articles.append(new_article)
-                        cnt = cnt - 1
+                        linkset.add(link_str)
                 except Exception as e:
                     print(f"Error processing article at {link_str}: {e}")
                     continue

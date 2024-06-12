@@ -3,15 +3,15 @@
 {% endblock %}
 
 {% block content %}
-<div id="main">
+<div id="main" >
     {% if user.is_authenticated %}
         <h1>Enter keywords</h1>
         <form method="GET">
             <div>
                 <label for="query"></label>
-                <input type="text" id="query" value="{{ request.GET.query }}" placeholder="query..." name="query"/>
+                <input type="text" id="query" value="{{ request.GET.query }}" placeholder="query..." name="query" required/>
             </div>
-            <input type="submit" value="Submit"/>
+            <input type="submit" id="query" value="Submit"/>
         </form>
         {% if results %}
             <div class="container">
@@ -36,7 +36,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                <table class="grid neutral">
+                <table class="grid">
                     <thead>
                         <tr>
                             <th>Neutral Sentiment</th>
@@ -83,21 +83,22 @@
             <p>No news found.</p>
         {% endif %}
     {% else %}
-        <div class="col-md-6 offset-md-3">
-            <h1>Login</h1>
-            <br/>
-            <form method="POST" action="{% url 'home' %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="username" placeholder="Username" required>
-                </div><br/>
-                <div class="mb-3">
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+        <div class="col-5 col-md-8 col-sm-6 mx-auto">
+                <div class="login-form">
+                    <h1>Login</h1>
+                    <br/>
+                    <form method="POST" action="{% url 'home' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
                 </div>
-                <br/>
-                <button type="submit" class="btn btn-secondary">Login</button>
-            </form>
-        </div>
+            </div>
     {% endif %}
 </div>
 

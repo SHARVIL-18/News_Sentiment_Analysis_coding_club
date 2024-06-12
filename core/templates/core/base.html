@@ -28,9 +28,26 @@
             font-size: 36px;
             color: #f5b301;  /* Gold color */
         }
+        
+        input[type='submit']#query {
+            width: 350px;
+            color: #fff;
+        }
+        
+        input[type='submit']#query:hover {
+            color: #f5b301;
+            background: #444;
+        }
 
-        input[type='text'] {
-            width: 60%;
+        input[type='text']#query {
+            width: 500px;
+            border-bottom: 2px solid #f5b301;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        input[type='text'], input[type='password'] {
+            width: 100%;
             margin-bottom: 20px;
             padding: 15px;
             border: none;
@@ -42,15 +59,15 @@
             transition: border-bottom-color 0.3s ease;
         }
 
-        input[type='text']:focus {
-            border-bottom-color: #f5b301;  /* Gold color */
+        input[type='text']:focus, input[type='password']:focus {
+            border-bottom-color: #f5b301;
         }
 
-        input[type='submit'] {
-            width: 200px;
+        input[type='submit'], button[type='submit'] {
+            width: 100%;
             padding: 15px;
             background: #333;
-            color: #f5b301;  /* Gold color */
+            color: #f5b301;
             border: none;
             border-radius: 30px;
             font-size: 18px;
@@ -59,7 +76,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        input[type='submit']:hover {
+        input[type='submit']:hover, button[type='submit']:hover {
             background: #444;
             color: #fff;
         }
@@ -67,13 +84,30 @@
         form {
             margin-bottom: 40px;
         }
+        
+        .createBookmark {
+            font-weight:bold;
+            font-size: 12px;
+            padding: 3px 5px; /* Adjust padding for the button */
+            border: none;
+            border-radius: 3px;
+            background-color: #f5b301;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .createBookmark:hover {
+            background-color: #333;
+            color: #f5b301;
+        }
 
         .container {
             display: flex;
             justify-content: center;
             gap: 20px;
         }
-        
+       
         .grid {
             width: 30%;
             border-collapse: collapse;
@@ -90,9 +124,23 @@
             vertical-align: top; /* Ensure content is aligned at the top */
         }
 
-        .grid th {
+        .grid thead {
             background-color: #333;
-            color: #f5b301;  /* Gold color */
+            color: #f5b301;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .grid th {
+            max-width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }        
+
+        .grid tbody {
+            background-color: #1e1e1e;
         }
 
         .grid td {
@@ -133,64 +181,73 @@
             padding: 15px; /* Adjust padding for all sentiment lists */
         }
 
+        .bookmark-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        .bookmark-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .bookmark-grid th, .bookmark-grid td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .bookmark-grid th {
+            background-color: #333;
+            color: #f5b301;  /* Gold color */
+            text-align: left;
+            padding: 10px;
+        }
+        
+        .bookmark-grid td {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        .bookmark-grid td a {
+            color: #f5b301;
+            text-decoration: none;
+        }
+        
+        .bookmark-grid td a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
                 align-items: center;
             }
-        }
-        
-        @media (max-width: 768px) {
+
             .grid {
                 width: 90%;
             }
         }
-        /* Add this CSS */
-<!--        .bookmark-container {-->
-<!--            width: 80%;-->
-<!--            margin: 0 auto;-->
-<!--        }-->
-
-<!--        .bookmark-grid {-->
-<!--            width: 100%;-->
-<!--            border-collapse: collapse;-->
-<!--        }-->
-
-<!--        .bookmark-grid th, .bookmark-grid td {-->
-<!--            border: 1px solid #ddd;-->
-<!--            padding: 8px;-->
-<!--        }-->
-
-<!--        .bookmark-grid th {-->
-<!--            background-color: #f2f2f2;-->
-<!--            text-align: left;-->
-<!--        }-->
-
-<!--        .bookmark-grid tr:hover {-->
-<!--            background-color: #f1f1f1;-->
-<!--        }-->
 
     </style>
   </head>
-  <body>
+<body>
     {% include './core/navbar.html' %}
-    <div class="container">
-      <br/>
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-
-
-        {% endfor %}
-      {% endif %}
-      
-      {% block content %}
-      {% endblock%}
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>
