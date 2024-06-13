@@ -3,9 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Django CRM</title>
+    <title>NewsTime</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <style>
+        /* Global styles */
         * {
             margin: 0;
             padding: 0;
@@ -21,19 +22,26 @@
         #main {
             text-align: center;
             padding-top: 50px;
+            margin: 0 auto;
         }
 
+        #main.logged-out {
+            width: 45%;
+        }
+
+        /* Header styling */
         h1 {
             margin-bottom: 20px;
             font-size: 36px;
             color: #f5b301;  /* Gold color */
         }
-        
+
+        /* Query input styling */
         input[type='submit']#query {
             width: 350px;
             color: #fff;
         }
-        
+
         input[type='submit']#query:hover {
             color: #f5b301;
             background: #444;
@@ -46,6 +54,7 @@
             font-weight: bold;
         }
 
+        /* Form control styling */
         input[type='text'], input[type='password'] {
             width: 100%;
             margin-bottom: 20px;
@@ -63,6 +72,7 @@
             border-bottom-color: #f5b301;
         }
 
+        /* Submit button styling */
         input[type='submit'], button[type='submit'] {
             width: 100%;
             padding: 15px;
@@ -81,14 +91,16 @@
             color: #fff;
         }
 
+        /* Form styling */
         form {
             margin-bottom: 40px;
         }
-        
+
+        /* Bookmark button styling */
         .createBookmark {
-            font-weight:bold;
+            font-weight: bold;
             font-size: 12px;
-            padding: 3px 5px; /* Adjust padding for the button */
+            padding: 3px 5px;
             border: none;
             border-radius: 3px;
             background-color: #f5b301;
@@ -96,18 +108,20 @@
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
+
         .createBookmark:hover {
             background-color: #333;
             color: #f5b301;
         }
 
+        /* Container styling */
         .container {
             display: flex;
             justify-content: center;
             gap: 20px;
+            padding: 0;
         }
-       
+
         .grid {
             width: 30%;
             border-collapse: collapse;
@@ -121,7 +135,7 @@
         th, td {
             padding: 20px;
             text-align: left;
-            vertical-align: top; /* Ensure content is aligned at the top */
+            vertical-align: top;
         }
 
         .grid thead {
@@ -130,14 +144,14 @@
             display: flex;
             justify-content: center;
         }
-        
+
         .grid th {
             max-width: 100%;
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-        }        
+        }
 
         .grid tbody {
             background-color: #1e1e1e;
@@ -146,11 +160,11 @@
         .grid td {
             background-color: #1e1e1e;
             color: #e0e0e0;
-            padding: 20px; /* Adjusted padding */
+            padding: 15px;  /* Adjust padding */
         }
 
         .grid td a {
-            color: white;  /* Gold color */
+            color: white;
             text-decoration: none;
         }
 
@@ -159,6 +173,7 @@
             text-decoration-color: #f5b301;
         }
 
+        /* Summary and score styling */
         .summary {
             text-align: justify;
         }
@@ -177,56 +192,134 @@
             margin-right: 10px;
         }
 
-        .grid td {
-            padding: 15px; /* Adjust padding for all sentiment lists */
-        }
-
         .bookmark-container {
             width: 80%;
             margin: 0 auto;
         }
-        
+
         .bookmark-grid {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        
+
         .bookmark-grid th, .bookmark-grid td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
         }
-        
+
         .bookmark-grid th {
             background-color: #333;
             color: #f5b301;  /* Gold color */
             text-align: left;
             padding: 10px;
         }
-        
+
         .bookmark-grid td {
             background-color: #1e1e1e;
             color: #e0e0e0;
         }
-        
+
         .bookmark-grid td a {
             color: #f5b301;
             text-decoration: none;
         }
-        
+
         .bookmark-grid td a:hover {
             text-decoration: underline;
         }
 
+        /* Login form styling */
+        .login-form {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .login-form h1 {
+            color: #f5b301;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Form control styling */
+        .login-form .form-control {
+            width: 100%;
+            background-color: #333;
+            border: none;
+            border-bottom: 2px solid #555;
+            border-radius: 0;
+            color: #e0e0e0;
+            font-size: 16px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-bottom-color 0.3s ease;
+        }
+
+        .login-form .form-control:focus {
+            border-bottom-color: #f5b301;
+            background-color: #444;
+        }
+
+        /* Submit button styling */
+        .login-form .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            color: #f5b301;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .login-form .btn-primary:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        /* Media queries for responsiveness */
         @media (max-width: 768px) {
+            #main {
+                margin: 0;
+                {% comment %} width: 100%; {% endcomment %}
+                padding-top: 20px;
+            }
+
+            #main.logged-out {
+                margin: 0;
+                width: 100%;
+                padding-top: 20px;
+            }
+
             .container {
+                padding: 0;
                 flex-direction: column;
                 align-items: center;
             }
 
             .grid {
                 width: 90%;
+            }
+
+            input[type='submit']#query, input[type='text']#query {
+                width: 300px;
+            }
+
+            .login-form {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            input[type='submit']#query, input[type='text']#query {
+                width: 200px;
             }
         }
 

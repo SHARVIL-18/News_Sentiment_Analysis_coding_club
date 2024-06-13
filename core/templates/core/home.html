@@ -3,7 +3,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="main" >
+<div id="main" class="{% if not user.is_authenticated %}logged-out{% endif %}">
     {% if user.is_authenticated %}
         <h1>Enter keywords</h1>
         <form method="GET">
@@ -84,21 +84,21 @@
         {% endif %}
     {% else %}
         <div class="col-5 col-md-8 col-sm-6 mx-auto">
-                <div class="login-form">
-                    <h1>Login</h1>
-                    <br/>
-                    <form method="POST" action="{% url 'home' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="username" placeholder="Username" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" name="password" placeholder="Password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                </div>
+            <div class="login-form">
+                <h1>Login</h1>
+                <br/>
+                <form method="POST" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
             </div>
+        </div>
     {% endif %}
 </div>
 
