@@ -51,7 +51,7 @@ def home(request):
 
             articles = []
             linkset = set()
-            for link in soup.find_all('a', limit=25):
+            for link in soup.find_all('a'):
                 link_str = str(link.get('href'))
                 # link_split = (link_str.split("/url?q="))
                 # if len(link_split) == 2:
