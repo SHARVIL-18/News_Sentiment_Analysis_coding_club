@@ -137,7 +137,7 @@ def register_user(request):
     return render(request, 'core/register.html', {'form': form})
 
 
-@login_required
+@login_required(login_url="/")
 def addbookmark(request):
     if request.method == 'GET':
         title = request.GET.get('title')
@@ -154,7 +154,7 @@ def addbookmark(request):
     return JsonResponse({'message': 'Invalid request.'}, status=400)
 
 
-@login_required
+@login_required(login_url="/")
 def bookmarks(request):
     user_bookmarks = NewsCard.objects.filter(user=request.user)
     return render(request, 'core/bookmarks.html', {'bookmarks': user_bookmarks})
