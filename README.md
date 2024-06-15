@@ -20,6 +20,5 @@ To run the project locally:
 1) Clone the repository
 2) install requirements using pip install -r requirements.txt
 3) install the nltk requirements commented in /final_project/views.py
-
-
+4) Finally run the command :
 ```py  manage.py runserver```
