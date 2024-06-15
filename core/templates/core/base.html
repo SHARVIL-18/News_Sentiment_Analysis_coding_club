@@ -26,7 +26,7 @@
         }
 
         #main.logged-out {
-            width: 45%;
+            width: 30%;
         }
 
         /* Header styling */
@@ -66,6 +66,10 @@
             font-size: 16px;
             outline: none;
             transition: border-bottom-color 0.3s ease;
+            background-color: #333;
+            border-radius: 0;
+            color: #e0e0e0;
+            padding: 10px 15px;
         }
 
         input[type='text']:focus, input[type='password']:focus {
@@ -74,7 +78,7 @@
 
         /* Submit button styling */
         input[type='submit'], button[type='submit'] {
-            width: 100%;
+            width: 50%;
             padding: 15px;
             background: #333;
             color: #f5b301;
@@ -83,6 +87,7 @@
             font-size: 18px;
             cursor: pointer;
             outline: none;
+            justify-self: center;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -94,6 +99,11 @@
         /* Form styling */
         form {
             margin-bottom: 40px;
+            display: grid;
+        }
+
+        .text-muted {
+            color: #A9A9A9 !important;
         }
 
         /* Bookmark button styling */
@@ -285,17 +295,24 @@
         }
 
         /* Media queries for responsiveness */
+        @media (max-width: 992px) {
+            #main.logged-out {
+                width: 55%;
+            }
+        }
+
         @media (max-width: 768px) {
+            input[type='submit'], button[type='submit'] {
+                width: 100%;
+            }
             #main {
                 margin: 0;
-                {% comment %} width: 100%; {% endcomment %}
                 padding-top: 20px;
             }
 
             #main.logged-out {
                 margin: 0;
-                width: 100%;
-                padding-top: 20px;
+                padding-top: 40px;
             }
 
             .container {
@@ -311,15 +328,19 @@
             input[type='submit']#query, input[type='text']#query {
                 width: 300px;
             }
-
-            .login-form {
-                padding: 10px;
-            }
         }
 
         @media (max-width: 576px) {
             input[type='submit']#query, input[type='text']#query {
                 width: 200px;
+            }
+            #main.logged-out {
+                margin: 0;
+                width: 60%;
+                padding-top: 40px;
+            }
+            .login-form {
+                padding: 20px;
             }
         }
 
